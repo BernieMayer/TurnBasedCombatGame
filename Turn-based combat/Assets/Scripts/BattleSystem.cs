@@ -92,6 +92,30 @@ public class BattleSystem : MonoBehaviour
 		}
 	}
 
+	IEnumerator PlayerSpecialAttack()
+	{
+		bool isDead = enemyUnit.TakeDamage(playerUnit.specialDamage);
+		playerUnit.ConsumeSpecialMove();
+
+		enemyHUD.SetHP(enemyUnit.currentHP);
+		dialogueText.text = "You used a special move!";
+
+		yield return new WaitForSeconds(2f);
+
+		dialogueText.text = "You have " + playerUnit.specialMovesCount + " special moves left";
+		yield return new WaitForSeconds(2f);
+
+		if(isDead)
+		{
+			state = BattleState.WON;
+			StartCoroutine(EndBattle());
+		} else
+		{
+			state = BattleState.ENEMYTURN;
+			StartCoroutine(EnemyTurn());
+		}
+	}
+
 	IEnumerator EnemyTurn()
 	{
 		dialogueText.text = enemyUnit.unitName + " attacks!";
@@ -163,5 +187,14 @@ public class BattleSystem : MonoBehaviour
 
 		StartCoroutine(PlayerHeal());
 	}
+
+	public void OnSpecialAttack() 
+	{
+		if (state != BattleState.PLAYERTURN)
+			return;
+		
+		StartCoroutine(PlayerSpecialAttack());
+	}
+	
 
 }

@@ -9,6 +9,8 @@ public class Unit : MonoBehaviour
 	public int unitLevel;
 
 	public int damage;
+	public int specialDamage;
+	public int specialMovesCount;
 
 	public int maxHP;
 	public int currentHP;
@@ -21,6 +23,14 @@ public class Unit : MonoBehaviour
 			return true;
 		else
 			return false;
+	}
+
+	public void ConsumeSpecialMove() 
+	{
+		specialMovesCount -= 1;
+		
+		if (specialMovesCount < 0)
+			specialMovesCount = 0;
 	}
 
 	public void Heal(int amount)

@@ -48,6 +48,8 @@ MonoBehaviour:
   unitName: Actual Rock
   unitLevel: 1
   damage: 10
+  specialDamage: 20
+  specialMovesCount: 5
   maxHP: 25
   currentHP: 20
 --- !u!1 &6450721039946225802
