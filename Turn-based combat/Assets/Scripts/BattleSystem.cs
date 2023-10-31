@@ -51,6 +51,27 @@ public class BattleSystem : MonoBehaviour
 		PlayerTurn();
 	}
 
+	IEnumerator LevelUp() 
+	{
+		playerUnit.maxHP = playerUnit.maxHP  + (int) ((double) playerUnit.maxHP * 1.05);
+		playerUnit.currentHP = playerUnit.maxHP;
+		playerUnit.unitLevel += 1;
+
+		enemyUnit.maxHP = enemyUnit.maxHP + (int) ((double) enemyUnit.maxHP * 1.05);
+		enemyUnit.currentHP = enemyUnit.maxHP;
+		enemyUnit.unitLevel += 1;
+
+		dialogueText.text = "Level up!";
+		
+		playerHUD.SetHUD(playerUnit);
+		enemyHUD.SetHUD(enemyUnit);
+
+		yield return new WaitForSeconds(2f);
+
+		state = BattleState.PLAYERTURN;
+		PlayerTurn();
+	}
+
 	IEnumerator PlayerAttack()
 	{
 		bool isDead = enemyUnit.TakeDamage(playerUnit.damage);
@@ -63,7 +84,7 @@ public class BattleSystem : MonoBehaviour
 		if(isDead)
 		{
 			state = BattleState.WON;
-			EndBattle();
+			StartCoroutine(EndBattle());
 		} else
 		{
 			state = BattleState.ENEMYTURN;
@@ -86,7 +107,7 @@ public class BattleSystem : MonoBehaviour
 		if(isDead)
 		{
 			state = BattleState.LOST;
-			EndBattle();
+			StartCoroutine(EndBattle());
 		} else
 		{
 			state = BattleState.PLAYERTURN;
@@ -95,12 +116,14 @@ public class BattleSystem : MonoBehaviour
 
 	}
 
-	void EndBattle()
+	IEnumerator EndBattle()
 	{
 		if(state == BattleState.WON)
 		{
-			SceneManager.LoadScene("ChoiceScene");
+	
 			dialogueText.text = "You won the battle!";
+			yield return new WaitForSeconds(1f);
+			StartCoroutine(LevelUp());
 		} else if (state == BattleState.LOST)
 		{
 			dialogueText.text = "You were defeated.";
